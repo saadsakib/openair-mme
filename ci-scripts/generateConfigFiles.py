@@ -92,6 +92,8 @@ class mmeConfigGen():
 		mmeFile.write('MME_CONF[@HSS_HOSTNAME@]=\'hss\'\n')
 		mmeFile.write('MME_CONF[@HSS_FQDN@]="${MME_CONF[@HSS_HOSTNAME@]}.${MME_CONF[@REALM@]}"\n')
 		mmeFile.write('MME_CONF[@HSS_IP_ADDR@]="' + str(self.hss_s6a_IP) + '"\n')
+		mmeFile.write('MME_CONF[@HHSS_FQDN@]="hss.airtel.bd"\n')
+		mmeFile.write('MME_CONF[@HHSS_IP_ADDR@]="' + str(self.hhss_s6a_IP) + '"\n')
 		mmeFile.write('MME_CONF[@HSS_REALM@]=$MY_REALM\n')
 		mmeFile.write('MME_CONF[@MCC@]=\'' + self.mcc + '\'\n')
 		mmeFile.write('MME_CONF[@MNC@]=\'' + self.mnc + '\'\n')
@@ -282,6 +284,9 @@ while len(argvs) > 1:
 	elif re.match('^\-\-hss_s6a=(.+)$', myArgv, re.IGNORECASE):
 		matchReg = re.match('^\-\-hss_s6a=(.+)$', myArgv, re.IGNORECASE)
 		myMME.hss_s6a_IP = ipaddress.ip_address(matchReg.group(1))
+	elif re.match('^\-\-hhss_s6a=(.+)$', myArgv, re.IGNORECASE):
+		matchReg = re.match('^\-\-hhss_s6a=(.+)$', myArgv, re.IGNORECASE)
+		myMME.hhss_s6a_IP = ipaddress.ip_address(matchReg.group(1))
 	elif re.match('^\-\-mme_s6a=(.+)$', myArgv, re.IGNORECASE):
 		matchReg = re.match('^\-\-mme_s6a=(.+)$', myArgv, re.IGNORECASE)
 		myMME.mme_s6a_IP = ipaddress.ip_address(matchReg.group(1))
