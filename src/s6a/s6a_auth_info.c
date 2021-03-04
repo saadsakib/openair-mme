@@ -17,6 +17,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "bstrlib.h"
 
@@ -332,13 +333,32 @@ int s6a_generate_authentication_info_req(s6a_auth_info_req_t *air_p) {
    */
   CHECK_FCT(fd_msg_add_origin(msg, 0));
   mme_config_read_lock(&mme_config);
+
+  
+  char ue_plmn[6];
+  int send_to_proxy = 0;
+  memcpy(ue_plmn, &(air_p->imsi[0]), 5);
+  ue_plmn[5] = '\0';
+  OAILOG_DEBUG(LOG_S6A, "%s ue_plmn: %s\n", __FUNCTION__, ue_plmn);
+  if(strcmp(ue_plmn, "20893") != 0) {
+    send_to_proxy = 1;
+  }
+  OAILOG_DEBUG(LOG_S6A, "%s Auth info request: send_to_proxy: %d\n", __FUNCTION__, send_to_proxy);
   /*
    * Destination Host
    */
   {
     CHECK_FCT(fd_msg_avp_new(s6a_fd_cnf.dataobj_s6a_destination_host, 0, &avp));
-    value.os.data = (unsigned char *)bdata(mme_config.s6a_config.hss_fqdn);
-    value.os.len = blength(mme_config.s6a_config.hss_fqdn);
+    
+    if(send_to_proxy == 1) {
+      char proxy_hss_fqdn[30] = "hss.airtel.bd";
+      value.os.data = (unsigned char *) proxy_hss_fqdn;
+      value.os.len = strlen(proxy_hss_fqdn);
+    } else {
+      value.os.data = (unsigned char *)bdata(mme_config.s6a_config.hss_fqdn);
+      value.os.len = blength(mme_config.s6a_config.hss_fqdn);
+    }
+    
     CHECK_FCT(fd_msg_avp_setvalue(avp, &value));
     CHECK_FCT(fd_msg_avp_add(msg, MSG_BRW_LAST_CHILD, avp));
   }
@@ -348,8 +368,16 @@ int s6a_generate_authentication_info_req(s6a_auth_info_req_t *air_p) {
   {
     CHECK_FCT(
         fd_msg_avp_new(s6a_fd_cnf.dataobj_s6a_destination_realm, 0, &avp));
-    value.os.data = (unsigned char *)bdata(mme_config.s6a_config.hss_realm);
-    value.os.len = blength(mme_config.s6a_config.hss_realm);
+    
+    if(send_to_proxy == 1) {
+      char proxy_hss_realm[30] = "airtel.bd";
+      value.os.data = (unsigned char *) proxy_hss_realm;
+      value.os.len = strlen(proxy_hss_realm);
+    } else {
+      value.os.data = (unsigned char *)bdata(mme_config.s6a_config.hss_realm);
+      value.os.len = blength(mme_config.s6a_config.hss_realm);
+    }
+    
     CHECK_FCT(fd_msg_avp_setvalue(avp, &value));
     CHECK_FCT(fd_msg_avp_add(msg, MSG_BRW_LAST_CHILD, avp));
   }
