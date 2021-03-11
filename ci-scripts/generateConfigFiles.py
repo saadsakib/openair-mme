@@ -25,6 +25,7 @@ class mmeConfigGen():
 	def __init__(self):
 		self.kind = ''
 		self.hss_s6a_IP = ipaddress.ip_address('0.0.0.0')
+		self.hhss_s6a_IP = ipaddress.ip_address('0.0.0.0')
 		self.mme_s6a_IP = ipaddress.ip_address('0.0.0.0')
 		self.mme_s1c_IP = ipaddress.ip_address('0.0.0.0')
 		self.mme_s1c_name = ''
