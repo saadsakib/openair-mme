@@ -282,6 +282,9 @@ while len(argvs) > 1:
 	elif re.match('^\-\-kind=(.+)$', myArgv, re.IGNORECASE):
 		matchReg = re.match('^\-\-kind=(.+)$', myArgv, re.IGNORECASE)
 		myMME.kind = matchReg.group(1)
+	elif re.match('^\-\-realm=(.+)$', myArgv, re.IGNORECASE):
+		matchReg = re.match('^\-\-realm=(.+)$', myArgv, re.IGNORECASE)
+		myMME.realm = matchReg.group(1)
 	elif re.match('^\-\-hss_s6a=(.+)$', myArgv, re.IGNORECASE):
 		matchReg = re.match('^\-\-hss_s6a=(.+)$', myArgv, re.IGNORECASE)
 		myMME.hss_s6a_IP = ipaddress.ip_address(matchReg.group(1))
