@@ -90,7 +90,11 @@ class mmeConfigGen():
 		mmeFile.write('MME_CONF[@PREFIX@]=$PREFIX\n')
 		mmeFile.write('MME_CONF[@REALM@]=$MY_REALM\n')
 		mmeFile.write('MME_CONF[@PID_DIRECTORY@]=\'/var/run\'\n')
-		mmeFile.write('MME_CONF[@MME_FQDN@]="mme.${MME_CONF[@REALM@]}"\n')
+		mmeFile.write('MME_CONF[@MME_CODE@]=\'' + self.mme_code + '\'\n')
+		if self.is_home:
+			mmeFile.write('MME_CONF[@MME_FQDN@]="mme${MME_CONF[@MME_CODE@]}.${MME_CONF[@REALM@]}"\n')
+		else:
+			mmeFile.write('MME_CONF[@MME_FQDN@]="mme.${MME_CONF[@REALM@]}"\n')
 		mmeFile.write('MME_CONF[@HSS_HOSTNAME@]=\'hss\'\n')
 		mmeFile.write('MME_CONF[@HSS_FQDN@]="${MME_CONF[@HSS_HOSTNAME@]}.${MME_CONF[@REALM@]}"\n')
 		mmeFile.write('MME_CONF[@HSS_IP_ADDR@]="' + str(self.hss_s6a_IP) + '"\n')
@@ -100,7 +104,7 @@ class mmeConfigGen():
 		mmeFile.write('MME_CONF[@MCC@]=\'' + self.mcc + '\'\n')
 		mmeFile.write('MME_CONF[@MNC@]=\'' + self.mnc + '\'\n')
 		mmeFile.write('MME_CONF[@MME_GID@]=\'' + self.mme_gid + '\'\n')
-		mmeFile.write('MME_CONF[@MME_CODE@]=\'' + self.mme_code + '\'\n')
+		
 		tacs = self.tac_list.split();
 		if len(tacs) < 3:
 			i = len(tacs)
@@ -342,7 +346,7 @@ while len(argvs) > 1:
 	elif re.match('^\-\-env_for_entrypoint', myArgv, re.IGNORECASE):
 		myMME.envForEntrypoint = True
 	elif re.match('^\-\-is_home', myArgv, re.IGNORECASE):
-		myHSS.is_home = True
+		myMME.is_home = True
 	else:
 		Usage()
 		sys.exit('Invalid Parameter: ' + myArgv)
