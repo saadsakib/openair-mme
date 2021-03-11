@@ -42,6 +42,7 @@ class mmeConfigGen():
 		self.realm = 'openairinterface.org'
 		self.fromDockerFile = False
 		self.envForEntrypoint = False
+		self.is_home = False
 
 	def GenerateMMEConfigurer(self):
 		mmeFile = open('./mme-cfg.sh', 'w')
@@ -157,6 +158,9 @@ class mmeConfigGen():
 		mmeFile.write('tmpl=`echo "$TAC_MME_1 % 256" | bc`\n')
 		mmeFile.write('MME_CONF[@TAC-LB_MME_1@]=`printf "%02x\\n" $tmpl`\n')
 		mmeFile.write('MME_CONF[@TAC-HB_MME_1@]=`printf "%02x\\n" $tmph`\n')
+		mmeFile.write('\n')
+		if not self.is_home:
+			mmeFile.write("echo 'ConnectPeer= \"@HHSS_FQDN@\" { ConnectTo = \"@HHSS_IP_ADDR@\"; No_SCTP ; No_IPv6; Prefer_TCP; No_TLS; port = 3868;};' >> $PREFIX/mme_fd.conf")
 		mmeFile.write('\n')
 		mmeFile.write('for K in "${!MME_CONF[@]}"; do \n')
 		mmeFile.write('  egrep -lRZ "$K" $PREFIX | xargs -0 -l sed -i -e "s|$K|${MME_CONF[$K]}|g"\n')
@@ -337,6 +341,8 @@ while len(argvs) > 1:
 		myMME.fromDockerFile = True
 	elif re.match('^\-\-env_for_entrypoint', myArgv, re.IGNORECASE):
 		myMME.envForEntrypoint = True
+	elif re.match('^\-\-is_home', myArgv, re.IGNORECASE):
+		myHSS.is_home = True
 	else:
 		Usage()
 		sys.exit('Invalid Parameter: ' + myArgv)
