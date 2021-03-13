@@ -342,7 +342,7 @@ while len(argvs) > 1:
 	elif re.match('^\-\-env_for_entrypoint', myArgv, re.IGNORECASE):
 		myMME.envForEntrypoint = True
 	elif re.match('^\-\-is_home', myArgv, re.IGNORECASE):
-		myHSS.is_home = True
+		myMME.is_home = True
 	else:
 		Usage()
 		sys.exit('Invalid Parameter: ' + myArgv)
